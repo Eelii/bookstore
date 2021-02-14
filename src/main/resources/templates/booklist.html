@@ -2,14 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Books</title>
+<link type="text/css"rel="stylesheet"href="css/bootstrap.min.css"th:href="@{css/bootstrap.min.css}"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 	<h1>Book</h1>
-	<table>
+	<table class="table table-striped">
 		<tr>
-			<th>Author--------------------</th>
-			<th>------------------------------Title------------------------------------</th>
+			<th>Author</th>
+			<th>Title</th>
 			<th>isbn</th>
 			<th>Year</th>
 		</tr>
@@ -20,10 +21,10 @@
 			<td th:text="${book.isbn}">isbn</td>
 			<td th:text="${book.year}">year</td>
 			<td><a th:href="@{/editbook/{id}(id=${book.id})}">Edit</a></td>
-			<td><a th:href="@{/deletebook/{id}(id=${book.id})}">Delete</a></td>
+			<td><a th:href="@{/deletebook/{id}(id=${book.id})}" class="btn btn-danger">Delete</a></td>
 			
 		</tr>
-		<a href="/addbook">Add a new book</a>
+		<a href="/addbook" class="btn btn-success">Add a new book</a>
 	</table>
 
 </body>
