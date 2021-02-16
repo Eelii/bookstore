@@ -4,6 +4,48 @@
 <title>Books</title>
 <link type="text/css"rel="stylesheet"href="css/bootstrap.min.css"th:href="@{css/bootstrap.min.css}"/>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<!-- Babylon.js -->
+        <script src="https://code.jquery.com/pep/0.4.2/pep.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/ammo.js"></script>
+        <script src="https://preview.babylonjs.com/cannon.js"></script>
+        <script src="https://preview.babylonjs.com/Oimo.js"></script>
+        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+        <script src="https://preview.babylonjs.com/babylon.js"></script>
+        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
+<style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+            position: absolute;
+  			right: 0px;
+  			top: 0px;
+  			z-index: -1;
+            width: 100%;
+            height: 94px;
+            touch-action: none;
+            }
+            
+            
+            h1 {
+            color: white;
+            }
+</style>
+
 </head>
 <body>
 	<h1>Book</h1>
@@ -26,6 +68,151 @@
 		</tr>
 		<a href="/addbook" class="btn btn-success">Add a new book</a>
 	</table>
+	
+	<canvas id="renderCanvas"></canvas>
+    <script>
+        var canvas = document.getElementById("renderCanvas");
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+        /*
+        	How to use lookat to make an eye-candy effect ! :)
+        	by Steve 'Stv' Duran for BabylonJS featured demos on 02.12.2015
+        */
+        var camera;
+        var scene;
+        
+        var cubes = [];
+        var cubes_mat;
+        
+        // better random function
+        function rnd(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        
+        // Create random cubes in a box of 100x100x100
+        function createCubesBall(num) {
+            for (var i = 0; i < num; i++) {
+                if (i === 0)
+                    cubes[i] = BABYLON.Mesh.CreateBox("b", 1.0, scene);
+                else
+                    cubes[i] = cubes[0].createInstance("b" + i);
+        
+                var x = rnd(-50, 50);
+                var y = rnd(-50, 50);
+                var z = rnd(-50, 50);
+        
+                cubes[i].scaling = new BABYLON.Vector3(rnd(1.0, 1.5), rnd(1.0, 1.5), rnd(1.0, 10.0));
+        
+                cubes[i].position = new BABYLON.Vector3(x, y, z);
+        
+                cubes[i].lookAt(new BABYLON.Vector3(0, 0, 0));
+            }
+        }
+        
+        var createScene = function (engine) {
+            scene = new BABYLON.Scene(engine);
+            scene.clearColor = new BABYLON.Color3(0, 0, 0);
+        
+            camera = new BABYLON.ArcRotateCamera("Camera", 33.7081, 0.9001, 39.91, BABYLON.Vector3.Zero(), scene);
+            camera.setTarget(BABYLON.Vector3.Zero());
+            camera.attachControl(canvas, false);
+        
+            var light = new BABYLON.PointLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
+        
+            var light1 = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 10, 0), scene);
+            light1.diffuseColor = new BABYLON.Color3(1, 1, 1);
+        
+            var sphere = BABYLON.Mesh.CreateSphere("s", 32, 5, scene);
+        
+            createCubesBall(1000);
+        
+            var mat_sphere = new BABYLON.StandardMaterial("s", scene);
+            sphere.material = mat_sphere;
+        
+            var probe = new BABYLON.ReflectionProbe("probe", 512, scene);
+            probe.renderList.push(sphere);
+        
+            cubes_mat = new BABYLON.StandardMaterial("m", scene);
+        
+            cubes[0].material = cubes_mat;
+        
+            var container = BABYLON.Mesh.CreateBox("cont", 110, scene);
+            var mat_cont = new BABYLON.StandardMaterial("mc", scene);
+            mat_cont.alpha = 0.1;
+            container.material = mat_cont;
+        
+            var px = 0, py = 0, pz = 0;
+            var cr = 0, cg = 0, cb = 0;
+            var t = 0.0;
+        
+            scene.registerBeforeRender(function () {
+        
+                // sin/cos random direction
+                px = 25.0 * Math.cos(t / 3.5);
+                py = 25.0 + 10.0 * Math.sin(t / 4.0);
+                pz = 25.0 * Math.cos(t / 4.5);
+        
+                // sin/cos random color between 0,1
+                cr = 0.5 + 0.5 * Math.sin(t / 12);
+                cg = 0.5 + 0.5 * Math.sin(t / 14);
+                cb = 0.5 + 0.5 * Math.sin(t / 16);
+        
+                // Change sphere and cubes colors
+                mat_sphere.diffuseColor = new BABYLON.Color3(cr, cg, cb);
+                mat_sphere.emissiveColor = new BABYLON.Color3(cr, cg, cb);
+                cubes_mat.diffuseColor = new BABYLON.Color3(cr, cg, cb);
+        
+                // Move our sphere
+                sphere.position = new BABYLON.Vector3(px, py, pz);
+        
+                // Make all cubes look at the moving sphere
+                for (var i = 0; i < cubes.length; i++) {
+                    cubes[i].lookAt(new BABYLON.Vector3(px, py, pz));
+                }
+        
+                camera.alpha = 4.0 * (Math.PI / 20 + Math.cos(t / 30));
+                camera.beta = 2.0 * (Math.PI / 20 + Math.sin(t / 50));
+                camera.radius = 180 + (-50 + 50 * Math.sin(t / 10));
+        
+                t += 0.1;
+            });
+        
+            return scene;
+        };
+                var engine;
+                var scene;
+                initFunction = async function() {               
+                    var asyncEngineCreation = async function() {
+                        try {
+                        return createDefaultEngine();
+                        } catch(e) {
+                        console.log("the available createEngine function failed. Creating the default engine instead");
+                        return createDefaultEngine();
+                        }
+                    }
+
+                    engine = await asyncEngineCreation();
+        if (!engine) throw 'engine should not be null.';
+        scene = createScene();};
+        initFunction().then(() => {sceneToRender = scene        
+            engine.runRenderLoop(function () {
+                if (sceneToRender && sceneToRender.activeCamera) {
+                    sceneToRender.render();
+                }
+            });
+        });
+
+        // Resize
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+        
+        
+       
+    </script>
 
 </body>
 </html>
