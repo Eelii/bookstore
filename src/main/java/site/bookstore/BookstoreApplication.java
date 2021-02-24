@@ -23,14 +23,14 @@ public class BookstoreApplication {
 
 	@Bean public CommandLineRunner demo(BookRepository repository, CategoryRepository repository2) {
 		return (args) ->{
-			Book book1 = new Book("Self Help for Dummies", "Phony Robbers", 1984, "ISBNLOLXD", 99);
-			Book book2 = new Book("How to Influence Friends and Win People", "Kari Kalmasuo", 2012, "ISBNOMGWTF", 2);
 			Category c1 = new Category("Comedy");
-			Category c2 = new Category("Fiction");
-			repository.save(book1);
-			repository.save(book2);
+			Category c2 = new Category("Fantasy");
 			repository2.save(c1);
 			repository2.save(c2);
+			Book book1 = new Book("Self Help for Dummies", "Phony Robbers", 1984, "ISBNLOLXD", 99, c1);
+			Book book2 = new Book("How to Influence Friends and Win People", "Kari Kalmasuo", 2012, "ISBNOMGWTF", 2, c2);
+			repository.save(book1);
+			repository.save(book2);
 		};
 	}
 }

@@ -40,7 +40,14 @@
 	<p>Author: <input type="text" th:field="${book.author}" /></p>
 	<p>Year: <input type="text" th:field="${book.year}" /></p>
 	<p>ISBN: <input type="text" th:field="${book.isbn}" /></p>
-	<input type="submit" value="Submit" /> <input type="reset" value="Reset" />
+	<p>
+	<label for="catlist">Categories</label>
+			 <select id="catlist" th:field="*{category}">
+       			<option th:each="category: ${categories}" th:value="${category.catId}" th:text="${category.name}"></option>
+    		</select>
+    </p>
+    <input type="reset" value="Reset" />
+	<p><input type="submit" value="Submit" /> </p>
 	</form>
 	<canvas id="renderCanvas"></canvas>
 	

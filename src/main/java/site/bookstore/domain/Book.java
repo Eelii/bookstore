@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Book {
@@ -17,10 +19,26 @@ public class Book {
 	private int year;
 	private int price;
 	
+	//Liittää kirjan kategorian category-taulun catId-arvon mukaiseen riviin. 
+	//Relaatiotietokantataulujen suhteet huomiodaan @ManyToOne ja @OneTomMany -annotaatioilla. 
+	@ManyToOne
+    @JoinColumn(name = "catId")
+    private Category category;
+	
 	public Book() {
 		super();
 	}
 	
+	public Book(String title, String author, int year, String isbn, int price, Category category) {
+		super();
+		this.isbn = isbn;
+		this.title = title;
+		this.author = author;
+		this.year = year;
+		this.price = price;
+		this.category = category;
+	}
+
 	public Book(String title, String author, int year, String isbn, int price) {
 		super();
 		this.title = title;
@@ -78,6 +96,16 @@ public class Book {
 	public void setPrice(int price) {
 		this.price = price;
 	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	
 	
 	
 }

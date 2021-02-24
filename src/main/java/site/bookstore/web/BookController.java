@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import site.bookstore.domain.Book;
 import site.bookstore.domain.BookRepository;
+import site.bookstore.domain.CategoryRepository;
 
 @Controller
 public class BookController {
@@ -22,6 +23,9 @@ public class BookController {
 	
 	@Autowired
 	BookRepository bookRepository; 
+	
+	@Autowired
+	CategoryRepository categoryRepository; 
 	
 	@GetMapping("/index")
 	public String getBooksIndex(Model model){
@@ -39,6 +43,7 @@ public class BookController {
 	@GetMapping("/addbook")
 	public String getAddbook(Model model) {
 		model.addAttribute("book", new Book());
+		model.addAttribute("categories", categoryRepository.findAll());
 		return "addbook";
 	}
 	
@@ -59,6 +64,7 @@ public class BookController {
 		
 		Optional<Book> op = bookRepository.findById(Id);
 		model.addAttribute("book", op.get());
+		model.addAttribute("categories", categoryRepository.findAll());
 		return "editbook";
 	}
 
