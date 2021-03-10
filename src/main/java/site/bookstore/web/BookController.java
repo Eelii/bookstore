@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import site.bookstore.domain.Book;
 import site.bookstore.domain.BookRepository;
@@ -32,6 +34,16 @@ public class BookController {
 		/*model.addAttribute("????",????)*/
 		return "booksIndex";
 	}
+	
+	@GetMapping("/books/{id}")
+	public @ResponseBody Optional<Book> findBookRest(@PathVariable("id") Long id) {	
+    	return bookRepository.findById(id);
+    } 
+	
+	@GetMapping("/books")
+	public @ResponseBody List<Book> bookListRest(){
+		return(List<Book>) bookRepository.findAll();
+	}     
 	
 	@GetMapping("/booklist")
 	public String getBooklist(Model model) {

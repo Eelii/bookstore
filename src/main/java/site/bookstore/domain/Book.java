@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 public class Book {
 	
@@ -22,8 +24,10 @@ public class Book {
 	//Liittää kirjan kategorian category-taulun catId-arvon mukaiseen riviin. 
 	//Relaatiotietokantataulujen suhteet huomiodaan @ManyToOne ja @OneTomMany -annotaatioilla. 
 	@ManyToOne
+	@JsonIgnoreProperties ("books") 
     @JoinColumn(name = "catId")
     private Category category;
+	
 	
 	public Book() {
 		super();
