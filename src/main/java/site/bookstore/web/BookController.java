@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,11 @@ public class BookController {
 		return "booksIndex";
 	}
 	
+	@GetMapping("/login")
+	public String getLogin(Model model){
+		return "login";
+	}
+	
 	@GetMapping("/books/{id}")
 	public @ResponseBody Optional<Book> findBookRest(@PathVariable("id") Long id) {	
     	return bookRepository.findById(id);
@@ -47,7 +53,7 @@ public class BookController {
 	
 	@GetMapping("/booklist")
 	public String getBooklist(Model model) {
-		List<Book> books =  (List<Book>) bookRepository.findAll();
+		List<Book> books = (List<Book>) bookRepository.findAll();
 		model.addAttribute("books", books);
 		return "booklist";
 	}
@@ -65,7 +71,9 @@ public class BookController {
 		return "redirect:/booklist";
 	}
 	
+	//HUOM. PreAuthorize & hasAuthority!!!!
 	@RequestMapping(value = "/deletebook/{id}", method = RequestMethod.GET)
+	@PreAuthorize("hasAuthority('ADMIN')") /*Rajoittaa käyttäjiä metodi-tasolla*/
 	public String deleteBook(@PathVariable("id") Long Id) {
 		bookRepository.deleteById(Id);
 		return "redirect:../booklist";

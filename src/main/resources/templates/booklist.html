@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <title>Books</title>
 <link type="text/css"rel="stylesheet"href="css/bootstrap.min.css"th:href="@{css/bootstrap.min.css}"/>
@@ -65,14 +65,19 @@
 			<td th:text="${book.year}">year</td>
 			<td th:text="${book.category.name}">category</td>
 			<td><a th:href="@{/editbook/{id}(id=${book.id})}">Edit</a></td>
-			<td><a th:href="@{/deletebook/{id}(id=${book.id})}" class="btn btn-danger">Delete</a></td>
+			<!-- Huom. sec html-tagissa -->
+			<td sec:authorize='hasAuthority("ADMIN")'><a th:href="@{/deletebook/{id}(id=${book.id})}" class="btn btn-danger">Delete</a></td>
 			
 		</tr>
 	</table>
 	<a href="/addbook" class="btn btn-success">Add a new book</a>
-	
+	<form th:action="@{/logout}"method="post"><input type="submit"value="Log out"/></form>
 	<canvas id="renderCanvas"></canvas>
+	<h1th:inline="text">Logged in as: [[${#httpServletRequest.remoteUser}]]</h1>
+	
     <script>
+    
+    	//BABYLON--------------------------------------------------------------------------------------------
         var canvas = document.getElementById("renderCanvas");
 
         var engine = null;
