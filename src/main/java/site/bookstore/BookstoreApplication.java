@@ -30,7 +30,7 @@ public class BookstoreApplication {
 			repository.save(book1);
 			repository.save(book2);
 			
-			User admin =new User("admin","$2a$10$0MMwY.IQqpsVc1jC8u7IJ.2rT8b0Cd3b3sfIBGV2zfgnPGtT4r0.C","ADMIN", "sdf@dsfsd.fi");
+			User admin =new User("admin","$2a$04$v3NzF6VipLCyJNzYtado/e7F.0FPx.vtfr58/8JfUoAdl0d6GQEPi","ADMIN", "sdf@dsfsd.fi");
 			urepository.save(admin);
 		};
 	}
